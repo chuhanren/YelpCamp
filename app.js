@@ -96,7 +96,7 @@ app.put('/campgrounds/:id', validateCampground, catchAsync(async(req, res)=>{
 
 app.delete('/campgrounds/:id', catchAsync(async(req, res)=>{
     const {id} = req.params;
-    await Campground.findByIdAndDelete(id);
+    await Campground.findByIdAndDelete(id);//will call the find one and delete middleware
     res.redirect('/campgrounds');
 }))
 
@@ -110,8 +110,17 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async(req, res)=
     res.redirect(`/campgrounds/${campground._id}`);//redirect to show page
    
 }
-
 ))
+
+//delete reviews
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async(req, res)=>{
+    const{ id, reviewId} = req.params;
+    await Campground.findByIdAndUpdate(id, {$pull:{ reviews:reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
+
+}))
+
 //sets up a route handler that will be executed for all HTTP methods (app.all) and all routes ('*')
 //made an new express error object
 //Calling next with an error object triggers the execution of the next error-handling middleware.
