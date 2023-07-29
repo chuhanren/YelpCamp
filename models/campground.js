@@ -18,8 +18,8 @@ const CampgroundSchema = new Schema({
 //delete middleware
 CampgroundSchema.post('findOneAndDelete', async function(doc){
     // console.log(doc);//see what's deleted
-    if(doc) {
-        await review.remove({
+    if(doc) {//if find doc, remove all reviews
+        await Review.remove({
             _id: {
                 $in: doc.reviews
             }
