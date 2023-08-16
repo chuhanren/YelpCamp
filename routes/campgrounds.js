@@ -9,26 +9,23 @@ const Campground = require('../models/campground');//import model
 const { campgroundSchema } = require('../schemas.js');
 const {isLoggedIn, validateCampground, isAuthor} = require('../middleware');
 
+router.route('/')
+    .get(catchAsync(campgrounds.index))
+    .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
 
-//index
-router.get('/', catchAsync(campgrounds.index));
-
-//add new campground form
 router.get('/new', isLoggedIn, campgrounds.renderNewForm);
+
+router.route('/:id')
+    .get(catchAsync(campgrounds.showCampground))
+    .put(isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.updateCampground))
+    .delete(isLoggedIn, catchAsync(campgrounds.deleteCampground))
+
 
 //add new campground
 //middleware: valiadate campground
 router.post('/', isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
 
-//show page
-router.get('/:id', catchAsync(campgrounds.showCampground));
-
 //edit form
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgrounds.renderEditForm))
-
-//update
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.updateCampground))//faking it's a put request
-
-router.delete('/:id', isLoggedIn, catchAsync(campgrounds.deleteCampground));
 
 module.exports = router;

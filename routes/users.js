@@ -7,19 +7,15 @@ const users = require('../controllers/users');
 const { remove } = require('../models/user');
 const {storeReturnTo} = require('../middleware');
 
+router.route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.register))
 
-router.get('/register', users.renderRegister);
-
-//register user, made a new user
-router.post('/register', catchAsync(users.register));
-
-//get user login form
-router.get('/login', users.renderLogin);
-//login route
-//local strategy
-router.post('/login', storeReturnTo, 
-    passport.authenticate('local', { failureFlash: true, failureRedirect:'/login' }), 
-    users.login)
+router.route('/login')
+    .get(users.renderLogin)
+    .post(storeReturnTo, 
+        passport.authenticate('local', { failureFlash: true, failureRedirect:'/login' }), 
+        users.login)
 
 router.get('/logout', users.logout); 
 
